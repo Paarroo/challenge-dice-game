@@ -46,11 +46,13 @@ const DiceGame: NextPage = () => {
       setIsRolling(false);
 
       setRolls(
-        rollsHistoryData?.map(({ args }) => ({
-          address: args.player as AddressType,
-          amount: Number(args.amount),
-          roll: (args.roll as bigint).toString(16).toUpperCase(),
-        })) || [],
+        rollsHistoryData
+          ?.filter(event => event && event.args)
+          .map(({ args }) => ({
+            address: args.player as AddressType,
+            amount: Number(args.amount),
+            roll: (args.roll as bigint).toString(16).toUpperCase(),
+          })) || [],
       );
     }
   }, [rolls, rollsHistoryData, rollsHistoryLoading]);
@@ -70,10 +72,12 @@ const DiceGame: NextPage = () => {
       setIsRolling(false);
 
       setWinners(
-        winnerHistoryData?.map(({ args }) => ({
-          address: args.winner as AddressType,
-          amount: args.amount as bigint,
-        })) || [],
+        winnerHistoryData
+          ?.filter(event => event && event.args)
+          .map(({ args }) => ({
+            address: args.winner as AddressType,
+            amount: args.amount as bigint,
+          })) || [],
       );
     }
   }, [winnerHistoryData, winnerHistoryLoading, winners.length]);
@@ -82,7 +86,7 @@ const DiceGame: NextPage = () => {
     contractName: "DiceGame",
   });
 
-  const { writeContractAsync: writeRiggedRollAsync, isError: riggedRollError } = useScaffoldWriteContract({
+  const { isError: riggedRollError } = useScaffoldWriteContract({
     contractName: "RiggedRoll",
   });
 

@@ -1,16 +1,15 @@
-import * as dotenv from "dotenv";
-dotenv.config();
-import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
-import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
+import "@nomicfoundation/hardhat-ethers";
 import "@nomicfoundation/hardhat-verify";
+import "@typechain/hardhat";
+import * as dotenv from "dotenv";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
-import { task } from "hardhat/config";
+import "hardhat-gas-reporter";
+import { HardhatUserConfig, task } from "hardhat/config";
+import "solidity-coverage";
 import generateTsAbis from "./scripts/generateTsAbis";
+dotenv.config();
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
@@ -37,7 +36,7 @@ const config: HardhatUserConfig = {
       },
     ],
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: "intuition",
   namedAccounts: {
     deployer: {
       // By default, it will take the first Hardhat account as the deployer
@@ -45,6 +44,14 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
+    // View the networks that are pre-configured.
+    // If the network you are looking for is not here you can add new network settings
+    hardhat: {
+      forking: {
+        url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
+        enabled: process.env.MAINNET_FORKING_ENABLED === "true",
+      },
+    },
     mainnet: {
       url: "https://mainnet.rpc.buidlguidl.com",
       accounts: [deployerPrivateKey],
@@ -117,17 +124,9 @@ const config: HardhatUserConfig = {
       url: "https://alfajores-forno.celo-testnet.org",
       accounts: [deployerPrivateKey],
     },
-    // View the networks that are pre-configured.
-    // If the network you are looking for is not here you can add new network settings
-    hardhat: {
-      forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
-        enabled: process.env.MAINNET_FORKING_ENABLED === "true",
-      },
-      mining: {
-        auto: true,
-        interval: 1000,
-      },
+    intuition: {
+      url: "https://testnet.rpc.intuition.systems",
+      accounts: [deployerPrivateKey],
     },
   },
   // Configuration for harhdat-verify plugin
